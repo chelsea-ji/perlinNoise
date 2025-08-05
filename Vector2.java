@@ -11,14 +11,14 @@ public class Vector2 {
 	}
 
 	public double dot(Vector2 v) {
-	    return this.x * v.x + this.y * v.y;
+	    	return this.x * v.x + this.y * v.y;
 	}
 	
-  public void rotateBy(double angle) {
-        double cos = Math.cos(angle);
-        double sin = Math.sin(angle);
-        double rx = x * cos - y * sin;
-        y = x * sin + y * cos;
-        x = rx;
-  }
+	public void rotateBy(double angle) {
+	        double cos = Math.cos(angle);
+	        double sin = Math.sin(angle);
+	        double rx = x * cos - y * sin;
+	        y = x * sin + y * cos;
+	        x = rx;
+  	}
 }
