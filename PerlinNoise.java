@@ -51,6 +51,12 @@ public class PerlinNoise extends Canvas{
 	
 	/**
 	 * calculate the dot product of the influence and distance vectors
+	 * @param influence - Vector2 object of the pixel's corresponding influence vector
+	 * @param x0 - x-coordinate of the corresponding grid corner
+	 * @param y0 - y-coordinate of the corresponding grid corner
+	 * @param x - x-coordinate of the pixel
+	 * @param y - y-coordinate of the pixel
+	 * @return - dot product of the influence and distance vectors
 	 */
 	public static double dotGradient(Vector2 influence, int x0, int y0, double x, double y) {
 		Vector2 distance = new Vector2(x - (double)x0, y - (double)y0);
@@ -59,6 +65,10 @@ public class PerlinNoise extends Canvas{
 	
 	/**
 	 * linear interpolation between two values with a given weight
+	 * @param val1
+	 * @param val2
+	 * @param w - weight
+	 * @return - interpolated value (double)
 	 */
 	public static double lerp(double val1, double val2, double w) {
 		return val1 + w*(val2 - val1);
@@ -66,6 +76,8 @@ public class PerlinNoise extends Canvas{
 	
 	/**
 	 * fade function applied to lerp weights to smooth grid lines
+	 * @param t - weight
+	 * @return - smoothed weight value
 	 */
 	public static double fade(double t) {
 	    return t*t*t*(t*(t*6-15)+10);
@@ -73,6 +85,10 @@ public class PerlinNoise extends Canvas{
 	
 	/**
 	 * calculates value from 0-1 given a coordinate point and list of influence vectors for a grid
+	 * @param x - x-coordinate
+	 * @param y - y-coordinate
+	 * @param vectors - list of influence vectors
+	 * @return - double value between 0 and 1
 	 */
 	public static double perlin(double x, double y, Vector2[][] vectors) {
 		// calculate corners of the grid cell the point is located in
@@ -104,7 +120,7 @@ public class PerlinNoise extends Canvas{
 	}
 	
 	/**
-	 * paints map on canvas
+	 * paints map on canvas, highest val (1) is white, lowest (0), is black
 	 */
 	public void paint(Graphics g) {			
 		for (int i = 0; i < map.length; i++) {
