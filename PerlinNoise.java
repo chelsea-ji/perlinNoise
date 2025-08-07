@@ -8,15 +8,14 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 public class PerlinNoise extends Canvas{
-	public static int length = 6;
-	public static int chunkWidth = 60;
-	public static int cellSize = 1;
+	public static int gridSize = 360;
+	public static int octaves = 8;
 	
-	public static double[][] map = new double[length*chunkWidth][length*chunkWidth];
+	public static double[][] map = new double[gridSize][gridSize];
 	
 	public static void main(String[] args) {	
 		
-		Vector2[][] vectors = new Vector2[length+1][length+1];
+		Vector2[][] vectors = new Vector2[gridSize*octaves][gridSize*octaves];
 		Random r = new Random();		
 
 		// generate random influence vectors for each grid point
@@ -26,23 +25,37 @@ public class PerlinNoise extends Canvas{
 				vectors[i][j].rotateBy(r.nextInt(360));
 			}
 		}
-		
-		double x = 0;
-		double y = 0;
+
 		// input all coordinate points into noise function
-		for (int i = 0; i < map.length; i++) {
-			for (int j = 0; j < map[0].length; j++) {
-				map[i][j] = perlin(x, y, vectors);
-				x += 1.0/chunkWidth;
+		for (int x = 0; x < map.length; x++) {
+			for (int y = 0; y < map[0].length; y++) {
+				double value = 0;
+				double frequency = 1;
+				double amplitude = 1;
+
+				for (int k = 0; k < octaves; k++) {
+					value += perlin(x*frequency/map.length, y*frequency/map.length, vectors)*amplitude;
+
+					frequency *= 2;
+					amplitude /= 2;
+				}
+
+				value *= 1.7;
+				if (value < -1.0) {
+					value = -1.0;
+				} else if (value > 1.0) {
+					value = 1.0;
+				}
+				value = (value + 1.0)/2.0*255.0;
+				
+				map[x][y] = (int)value;
 			}
-			y += 1.0/chunkWidth;
-			x = 0;
 		}
 		
 		// set up canvas
 		JFrame frame = new JFrame("map");
 		Canvas canvas = new PerlinNoise();
-		canvas.setSize(360,360);
+		canvas.setSize(gridSize,gridSize);
 		canvas.setBackground(Color.WHITE);
 		frame.add(canvas);
 		frame.pack();
@@ -100,7 +113,7 @@ public class PerlinNoise extends Canvas{
 		
 		double value = lerp(i0, i1, vw);
 		
-		return (value + 1.0)/2.0*255.0;
+		return value;
 	}
 	
 	/**
@@ -109,13 +122,10 @@ public class PerlinNoise extends Canvas{
 	public void paint(Graphics g) {			
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {	
-								
-				int pixelX = j*cellSize;
-				int pixelY = i*cellSize;
 
-				double value = map[i][j];
-				g.setColor(new Color((int)value, (int)value, (int)value));
-				g.fillRect(pixelX, pixelY, cellSize, cellSize);
+				int val = (int) (map[i][j]);
+				g.setColor(new Color(val, val, val));
+				g.fillRect(i, j, 1, 1);
 			}
 		}
 	}
